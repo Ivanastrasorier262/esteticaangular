@@ -1,0 +1,22 @@
+<div class="layout-topbar">
+    <a class="layout-topbar-logo" routerLink="">
+        <span>Etérea Fisioestética Historias Clinicas</span>
+    </a>
+
+    <button class="p-link layout-menu-button layout-topbar-button p-trigger" (click)="layoutService.onMenuToggle()">
+        <i class="pi pi-bars"></i>
+    </button>
+
+    <button class="p-link layout-topbar-menu-button layout-topbar-button p-trigger" (click)="layoutService.showProfileSidebar()">
+        <i class="pi pi-ellipsis-v"></i>
+    </button>
+
+    <div class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+        <p-toast></p-toast>
+        <button class="p-link layout-topbar-button" (click)="closeSession($event)">
+            <i class="pi pi-user"></i>
+            <span>Profile</span>
+        </button>
+        <p-confirmPopup key="closeSession"></p-confirmPopup>
+    </div>
+</div>

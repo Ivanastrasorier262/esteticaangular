@@ -1,0 +1,224 @@
+<div>
+    <div class="grid formgrid">
+        <div class="col-12 mb-4 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="date">Fecha Carga</label>
+                <p-calendar [showIcon]="true" id="date" dateFormat="dd/mm/yy" [showOnFocus]="false" [disabled]="readonly" [(ngModel)]="patient.lastConsultation!.bodyInformation!.date" inputId="icon" autofocus></p-calendar>
+            </div>
+        </div>
+        <div class="col-12 mb-8 lg:col-8 lg:mb-0">
+            <div class="field">
+                <label for="observations">Observaciones</label>
+                <textarea id="observations" pInputTextarea [(ngModel)]="patient.lastConsultation!.bodyInformation!.observations" [disabled]="readonly" rows="3" cols="20"></textarea>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid formgrid">
+        <div class="col-12 mb-4 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="weight">Peso (Kg)</label>
+                <p-inputNumber mode="decimal" id="weight" [minFractionDigits]="1" locale="en-US" suffix=" Kg" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.weight" (ngModelChange)="calculateImc()" (onInput)="calculateImc()" (onFocus)="calculateImc()" (onBlur)="calculateImc()" [disabled]="readonly" [step]="1" [min]="30" [max]="150">
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="col-12 mb-4 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="height">Altura (Mts)</label>
+                <p-inputNumber mode="decimal" id="height" [minFractionDigits]="1" locale="en-US" suffix=" mts" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.height" (ngModelChange)="calculateImc()" (onInput)="calculateImc()" (onFocus)="calculateImc()" (onBlur)="calculateImc()" [disabled]="readonly" [step]="0.01" [min]="0.4" [max]="3.0">
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="col-12 mb-4 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="bodyMassIndex" *ngIf="patient.lastConsultation?.bodyInformation?.bodyMeasurements?.bodyMassIndex">
+                    IMC
+                    <p-tag *ngIf="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.bodyMassIndex! < 18.5" styleClass="mr-2" severity="warning" value="Bajo peso"></p-tag>
+                    <p-tag *ngIf="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.bodyMassIndex! >= 18.5 && patient.lastConsultation!.bodyInformation!.bodyMeasurements!.bodyMassIndex! < 25" styleClass="mr-2" severity="success" value="Normal"></p-tag>
+                    <p-tag *ngIf="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.bodyMassIndex! >= 25 && patient.lastConsultation!.bodyInformation!.bodyMeasurements!.bodyMassIndex! < 30" styleClass="mr-2" severity="warning" value="Sobrepeso"></p-tag>
+                    <p-tag *ngIf="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.bodyMassIndex! > 30" styleClass="mr-2" severity="danger" value="Obesidad"></p-tag>
+                </label>
+                <label for="bodyMassIndex" *ngIf="!patient.lastConsultation?.bodyInformation?.bodyMeasurements?.bodyMassIndex">
+                    IMC
+                </label>
+                <p-inputNumber mode="decimal" id="bodyMassIndex" [minFractionDigits]="1" [maxFractionDigits]="1" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.bodyMassIndex" [disabled]="true" [min]="10" [max]="50">
+                </p-inputNumber>
+            </div>
+        </div>
+    </div>
+
+    <h5>Medidas corporales</h5>
+
+    <div class="grid formgrid">
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="rightArm">Brazo derecho</label>
+                <p-inputNumber mode="decimal" id="rightArm" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.rightArm" [disabled]="readonly"  [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+                <p-inputNumber mode="decimal" id="rightArmM" placeholder="Medido desde" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.rightArmM" [disabled]="readonly"  [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="leftArm">Brazo izquierdo</label>
+                <p-inputNumber mode="decimal" id="leftArm" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.leftArm" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+                <p-inputNumber mode="decimal" id="leftArmM" placeholder="Medido desde" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.leftArmM" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="rightThigh">Muslo derecho</label>
+                <p-inputNumber mode="decimal" id="rightThigh" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.rightThigh" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+                <p-inputNumber mode="decimal" id="rightThighM" placeholder="Medido desde" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.rightThighM" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="leftThigh">Muslo izquierdo</label>
+                <p-inputNumber mode="decimal" id="leftThigh" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.leftThigh" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+                <p-inputNumber mode="decimal" id="leftThighM" placeholder="Medido desde" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.leftThighM" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="rightKnee">Rodilla derecho</label>
+                <p-inputNumber mode="decimal" id="rightKnee" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.rightKnee" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+                <p-inputNumber mode="decimal" id="rightKneeM" placeholder="Medido desde" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.rightKneeM" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="leftKnee">Rodilla izquierdo</label>
+                <p-inputNumber mode="decimal" id="leftKnee" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.leftKnee" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+                <p-inputNumber mode="decimal" id="leftKneeM" placeholder="Medido desde" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.leftKneeM" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+            </div>
+        </div>
+    </div>
+    <div class="grid formgrid">
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="rightAnkle">Tobillo derecho</label>
+                <p-inputNumber mode="decimal" id="rightAnkle" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.rightAnkle" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+                <p-inputNumber mode="decimal" id="rightAnkleM" placeholder="Medido desde" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.rightAnkleM" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="leftAnkle">Tobillo izquierdo</label>
+                <p-inputNumber mode="decimal" id="leftAnkle" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.leftAnkle" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+                <p-inputNumber mode="decimal" id="leftAnkleM" placeholder="Medido desde" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.leftAnkleM" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="chest">Pecho</label>
+                <p-inputNumber mode="decimal" id="chest" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.chest" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+                <p-inputNumber mode="decimal" id="chestM" placeholder="Medido desde" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.chestM" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="waistO">Cintura ombligo</label>
+                <p-inputNumber mode="decimal" id="waistO" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.waistO"  [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+                <p-inputNumber mode="decimal" id="waistOM" placeholder="Medido desde" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.waistOM"  [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="waistS">Cintura supramumbilical</label>
+                <p-inputNumber mode="decimal" id="waistS" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.waistS"  [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+                <p-inputNumber mode="decimal" id="waistSM" placeholder="Medido desde" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.waistSM"  [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="waistI">Cintura inframumbilical</label>
+                <p-inputNumber mode="decimal" id="waistI" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.waistI"  [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+                <p-inputNumber mode="decimal" id="waistIM" placeholder="Medido desde" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.waistIM"  [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+            </div>
+        </div>
+       
+    </div>
+    <div class="grid formgrid">
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="huckle">Cadera</label>
+                <p-inputNumber mode="decimal" id="huckle" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.huckle" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+                <p-inputNumber mode="decimal" id="huckleM" placeholder="Medido desde" [minFractionDigits]="1" [minFractionDigits]="2" locale="en-US" suffix=" cms" [(ngModel)]="patient.lastConsultation!.bodyInformation!.bodyMeasurements!.huckleM" [disabled]="readonly" [step]="1" [min]="0" [max]="200">
+                </p-inputNumber>
+            </div>
+        </div>
+    </div>
+
+    <h5>Inspeccion corporal</h5>
+
+    <div class="grid formgrid">
+        <div class="col-12 mb-4 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="cellulitis">Celulitis</label>
+                <p-dropdown [options]="completeListCellulitis" id="cellulitis" [disabled]="readonly" [(ngModel)]="patient.lastConsultation!.bodyInformation!.inspection!.cellulitis" placeholder="Seleccionar" [showClear]="true"></p-dropdown>
+            </div>
+        </div>
+        <div class="col-12 mb-4 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="retentionEdema">Retencion / Edema</label>
+                <p-toggleButton [(ngModel)]="patient.lastConsultation!.bodyInformation!.inspection!.retentionEdema" id="retentionEdema" onLabel="Si" offLabel="No" [disabled]="readonly" [style]="{'width': '10em', 'display': 'block'}"></p-toggleButton>
+            </div>
+        </div>
+        <div class="col-12 mb-4 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="retentionEdemaZones">Zonas</label>
+                <p-chips [(ngModel)]="patient.lastConsultation!.bodyInformation!.inspection!.retentionEdemaZones" id="retentionEdemaZones" [disabled]="readonly"></p-chips>
+            </div>
+        </div>
+    </div>
+
+    <h5>Imagenes</h5>
+
+    <div class="grid formgrid">
+        <div class="col-12 mb-12 lg:col-12 lg:mb-0">
+            <p-fileUpload *ngIf="!readonly" name="image[]" [auto]="true" [customUpload]="true" (uploadHandler)="onUploadFilesCorporal($event)" (onRemove)="onRemoveFilesCorporal($event)" [disabled]="readonly"
+                        [multiple]="true" accept="image/*" [maxFileSize]="4000000">
+                <ng-template pTemplate="content">
+                    <ul *ngIf="uploadedFilesCorporal.length">
+                        <li *ngFor="let file of uploadedFilesCorporal">{{file.name}} - {{file.size}} bytes</li>
+                    </ul>
+                </ng-template>
+            </p-fileUpload>
+            <p-dataView *ngIf="(readonly || showImageLoader) && patient.lastConsultation!.bodyInformation!.images" [value]="patient.lastConsultation!.bodyInformation!.images!" [paginator]="true" [rows]="3" layout="grid">
+                <ng-template let-image pTemplate="gridItem">
+                    <div class="col-12 md:col-4">
+                        <div class="product-grid-item card">
+                            <p-image [src]="image" alt="Imagen Corporal" width="100%" [preview]="true" (keydown)="onCloseImagePreview()" ></p-image>
+                            <button pButton pRipple label="Borrar Imagen" icon="pi pi-times" class="p-button-text" (click)="deleteImage(image)"></button>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-dataView>
+        </div>
+    </div>
+</div>

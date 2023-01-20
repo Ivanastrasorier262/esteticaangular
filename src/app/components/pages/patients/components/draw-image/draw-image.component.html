@@ -1,0 +1,11 @@
+<div class="field">
+    <div class="col-12 mb-4 lg:col-4 lg:mb-0">
+        <button #btn type="button" pButton icon="pi pi-bars" [disabled]="readonly" label="Opciones De Imagen" (click)="menu.toggle($event)"></button>
+        <p-slideMenu #menu [model]="itemsFacialContextMenu" [popup]="true" [style]="{'min-width':'190px'}" ></p-slideMenu>
+    </div>
+
+    <img #backImage alt="" style="display: none;" [width]="backgroundImageWidth" [height]="backgroundImageHeight" [src]="backgroundImageUrl" />
+    <canvas #drawCanvas style="display: none;" [width]="backgroundImageWidth" [height]="backgroundImageHeight"></canvas>
+    <img #finalImage alt="" style="display:none;">
+    
+</div>

@@ -1,0 +1,125 @@
+<div >
+    <div class="grid formgrid">
+        <div class="col-12 mb-4 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="date">Fecha Carga</label>
+                <p-calendar [showIcon]="true" id="date" dateFormat="dd/mm/yy" [disabled]="readonly" [showOnFocus]="false" [(ngModel)]="patient.lastConsultation!.facialInformation!.date" inputId="icon" autofocus ></p-calendar>
+            </div>
+        </div>
+        <div class="col-12 mb-8 lg:col-8 lg:mb-0">
+            <div class="field">
+                <label for="observations">Observaciones</label>
+                <textarea id="observations" pInputTextarea [disabled]="readonly" [(ngModel)]="patient.lastConsultation!.facialInformation!.observations" required rows="3" cols="20"></textarea>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid formgrid">
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="color">Color</label>
+                <p-dropdown [options]="completeListColors" id="color" [disabled]="readonly" [(ngModel)]="patient.lastConsultation!.facialInformation!.color" placeholder="Seleccionar" [showClear]="true"></p-dropdown>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="texture">Textura</label>
+                <p-dropdown [options]="completeListTextures" id="texture" [disabled]="readonly" [(ngModel)]="patient.lastConsultation!.facialInformation!.texture" placeholder="Seleccionar" [showClear]="true"></p-dropdown>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="hydration">Hidratación</label>
+                <p-dropdown [options]="completeListHydrations" id="hydration" [disabled]="readonly" [(ngModel)]="patient.lastConsultation!.facialInformation!.hydration" placeholder="Seleccionar" [showClear]="true"></p-dropdown>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="pore">Poros</label>
+                <p-dropdown [options]="completeListPores" id="pore" [disabled]="readonly" [(ngModel)]="patient.lastConsultation!.facialInformation!.pore" placeholder="Seleccionar" [showClear]="true"></p-dropdown>
+            </div>
+        </div> 
+        <div class="col-12 mb-4 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="acne">Acne</label>
+                <p-dropdown [options]="completeListAcnes" id="acne" [disabled]="readonly" [(ngModel)]="patient.lastConsultation!.facialInformation!.acne" placeholder="Seleccionar" [showClear]="true"></p-dropdown>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid formgrid">
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="pigment">Pigmento</label>
+                <p-dropdown [options]="completeListPigments" id="pigment" [disabled]="readonly" [(ngModel)]="patient.lastConsultation!.facialInformation!.pigment" placeholder="Seleccionar" [showClear]="true"></p-dropdown>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="vascular">Vascular</label>
+                <p-dropdown [options]="completeListVasculars" id="vascular" [disabled]="readonly" [(ngModel)]="patient.lastConsultation!.facialInformation!.vascular" placeholder="Seleccionar" [showClear]="true"></p-dropdown>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="scar">Cicatrices</label>
+                <p-dropdown [options]="completeListScars" id="scar" [disabled]="readonly" [(ngModel)]="patient.lastConsultation!.facialInformation!.scar" placeholder="Seleccionar" [showClear]="true"></p-dropdown>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-2 lg:mb-0">
+            <div class="field">
+                <label for="skin">Tipo piel</label>
+                <p-dropdown [options]="completeListSkins" id="skin" [disabled]="readonly" [(ngModel)]="patient.lastConsultation!.facialInformation!.skin" placeholder="Seleccionar" [showClear]="true"></p-dropdown>
+            </div>
+        </div>
+        <div class="col-12 mb-4 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="muscularTone">Tono muscular</label>
+                <p-dropdown [options]="completeListMuscularTones" id="muscularTone" [disabled]="readonly" [(ngModel)]="patient.lastConsultation!.facialInformation!.muscularTone" placeholder="Seleccionar" [showClear]="true"></p-dropdown>
+            </div>
+        </div>
+    </div>
+
+    <h5>Imagenes</h5>
+
+    <div class="grid formgrid">
+        <div class="col-12 mb-12 lg:col-12 lg:mb-0">
+            <p-fileUpload *ngIf="!readonly" name="image[]" [auto]="true" [customUpload]="true" (uploadHandler)="onUploadFilesFacial($event)" (onRemove)="onRemoveFilesCorporal($event)"
+                        [multiple]="true" accept="image/*" [maxFileSize]="4000000" [disabled]="readonly" >
+                <ng-template pTemplate="content">
+                    <ul *ngIf="uploadedFilesFacial.length">
+                        <li *ngFor="let file of uploadedFilesFacial">{{file.name}} - {{file.size}} bytes</li>
+                    </ul>
+                </ng-template>
+            </p-fileUpload>
+            <p-dataView *ngIf="(readonly || showImageLoader) && patient.lastConsultation!.facialInformation!.images" [value]="patient.lastConsultation!.facialInformation!.images!" [paginator]="true" [rows]="3" layout="grid">
+                <ng-template let-image pTemplate="gridItem">
+                    <div class="col-12 md:col-4">
+                        <div class="product-grid-item card">
+                            <p-image [src]="image" alt="Imagen Facial" width="100%" [preview]="true" (keydown)="onCloseImagePreview()" ></p-image>
+                            <button pButton pRipple label="Borrar Imagen" icon="pi pi-times" class="p-button-text" (click)="deleteImage(image)"></button>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-dataView>
+        </div>
+    </div>
+
+    <h5>Imagen Rostro</h5>
+
+    <div class="grid formgrid">
+        <div class="col-12 mb-6 lg:col-6 lg:mb-0">
+            <app-draw-image *ngIf="!patient.lastConsultation?.facialInformation?.facialImage" [backgroundImageUrl]="'assets/eterea/images/facial/imagen1.png'" [backgroundImageWidth]="400" [backgroundImageHeight]="400" [(facialDrawImage)]="facialDrawImage" [readonly]="readonly">
+
+            </app-draw-image>
+            <p-image *ngIf="patient.lastConsultation?.facialInformation?.facialImage" [src]="patient.lastConsultation!.facialInformation!.facialImage!" alt="Imagen Facial" width="100%" [preview]="true" (keydown)="onCloseImagePreview()" ></p-image>
+        </div>
+        <div class="col-12 mb-6 lg:col-6 lg:mb-0">
+            <div class="field">
+                <label for="observations">Observaciones</label>
+                <textarea id="observations" pInputTextarea [disabled]="readonly" [(ngModel)]="patient.lastConsultation!.facialInformation!.observations" required rows="3" cols="20"></textarea>
+            </div>
+        </div>
+    </div>
+
+</div>

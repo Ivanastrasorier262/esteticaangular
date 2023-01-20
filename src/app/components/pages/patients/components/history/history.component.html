@@ -1,0 +1,60 @@
+<div class="card">
+    <h5>Listado de consultas</h5>
+    <p-timeline [value]="consultations" align="left"  styleClass="customized-timeline">
+        <ng-template pTemplate="marker" let-event>
+        <span class="flex z-1 w-2rem h-2rem align-items-center justify-content-center text-white border-circle shadow-2" [style.backgroundColor]="'#607D8B'">
+            <i [ngClass]="'pi pi-calendar-plus'"></i>
+        </span>
+        </ng-template>
+        <ng-template pTemplate="content" let-consultation>
+            <p-card [header]="'Atentido por: ' + (consultation.attendedBy ?? 'Sin indicar')" [subheader]="consultation.date | amDateFormat:'DD/MM/YYYY HH:mm'">
+                <div *ngIf="consultation.reasonForConsultation">
+                    <h5 for="reasonForConsultation">Razon de la consulta</h5>
+                    <textarea id="reasonForConsultation" pInputTextarea [(ngModel)]="consultation.reasonForConsultation" [disabled]="true" required rows="3" cols="20"></textarea>
+                </div>
+                <div class="field" *ngIf="consultation.reasonForConsultation">
+                    <h5 for="completeListContraindications">Contraindicaciones</h5>
+                    <p-multiSelect [options]="completeListContraindications" [(ngModel)]="consultation.contraindications" [disabled]="true" id="contraindications" defaultLabel="Seleccionar" display="chip"></p-multiSelect>
+                </div>
+                <div class="field" *ngIf="consultation.reasonForConsultation">
+                    <h5 for="allergies">Alergias</h5>
+                    <p-chips [(ngModel)]="consultation.allergies" id="allergies" [disabled]="true"></p-chips>
+                </div>
+                <div *ngIf="consultation.observations">
+                    <h5 for="observations">Razon de la consulta</h5>
+                    <textarea id="observations" pInputTextarea [(ngModel)]="consultation.observations" [disabled]="true" required rows="3" cols="20"></textarea>
+                </div>
+                <div *ngIf="consultation.bodyInformation?.images">
+                    <h5>Imagenes corporales</h5>
+                    <p-dataView [value]="consultation.bodyInformation!.images" [paginator]="true" [rows]="3" layout="grid">
+                        <ng-template let-image pTemplate="gridItem">
+                            <div class="col-12 md:col-4">
+                                <div class="product-grid-item card">
+                                    <p-image [src]="image" alt="Imagen Corporal" width="100%" [preview]="true" (keydown)="onCloseImagePreview()" ></p-image>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-dataView>
+                </div>
+                <div *ngIf="consultation.facialInformation?.images">
+                    <h5>Imagenes faciales</h5>
+                    <p-dataView [value]="consultation.facialInformation!.images" [paginator]="true" [rows]="3" layout="grid">
+                        <ng-template let-images pTemplate="gridItem">
+                            <div class="col-12 md:col-4">
+                                <div class="product-grid-item card">
+                                    <p-image [src]="images" alt="Imagen Facial" width="100%" [preview]="true" (keydown)="onCloseImagePreview()" ></p-image>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-dataView>
+                </div>
+                <div *ngIf="consultation.facialInformation?.facialImage">
+                    <h5>Imagen facial</h5>
+                    <p-image [src]="consultation.facialInformation?.facialImage" alt="Imagen Facial" width="100%" [preview]="true" (keydown)="onCloseImagePreview()" ></p-image>
+                </div>
+
+                <button pButton label="Ver todos los datos de la consulta" class="p-button-outlined mb-5" (click)="openConsultation(consultation.id)"></button>
+            </p-card>
+        </ng-template>
+    </p-timeline>
+</div>

@@ -1,0 +1,53 @@
+<div>
+
+    <div class="field">
+        <label for="code">Código SaraWorld</label>
+        <input type="text" pInputText id="code" [(ngModel)]="patient.code" [disabled]="readonly" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !patient.code}"/>
+        <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.code">El codigo SaraWorld es requerido.</small>
+    </div>
+
+    <div class="grid formgrid">
+        <div class="col-12 mb-2 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="name">Nombre</label>
+                <input type="text" pInputText id="name" [(ngModel)]="patient.name" [disabled]="readonly" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !patient.name}"/>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.name">El nombre es requerido.</small>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="surname1">Primer Apellido</label>
+                <input type="text" pInputText id="surname1" [(ngModel)]="patient.surname1" [disabled]="readonly" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !patient.surname1}"/>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.surname1">El primer apellido es requerido.</small>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="surname2">Segundo Apellido</label>
+                <input type="text" pInputText id="surname2" [(ngModel)]="patient.surname2" [disabled]="readonly" required autofocus/>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid formgrid">
+        <div class="col-12 mb-2 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="birthDate">Fecha Nacimiento</label>
+                <p-calendar [showIcon]="true" id="birthDate" appendTo="body" [showOnFocus]="false" (onSelect)="calculateDate()" (onInput)="calculateDate()" dateFormat="dd/mm/yy" [(ngModel)]="patient.birthDate" [disabled]="readonly" inputId="icon" autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !patient.birthDate}"></p-calendar>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.birthDate">La fecha de nacimiento es requerida.</small>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="age">Edad</label>
+                <input type="text" pInputText id="age" [(ngModel)]="patient.age" [disabled]="true" autofocus/>
+            </div>
+        </div>
+        <div class="col-12 mb-2 lg:col-4 lg:mb-0">
+            <div class="field">
+                <label for="occupation">Ocupación</label>
+                <input type="text" pInputText id="occupation" [(ngModel)]="patient.occupation" [disabled]="readonly" required autofocus />
+            </div>
+        </div>
+    </div>
+</div>

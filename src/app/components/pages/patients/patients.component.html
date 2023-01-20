@@ -1,0 +1,265 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Nuevos Pacientes" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Eliminar" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedPatients()" [disabled]="!selectedPatients || !selectedPatients.length"></button>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="right">
+                    <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Importar" chooseLabel="Importar" class="mr-2 inline-block"></p-fileUpload>
+                    <button pButton pRipple label="Exportar" icon="pi pi-upload" class="p-button-help" (click)="dt.exportCSV()"></button>
+                </ng-template>
+            </p-toolbar>
+            <p-toolbar>
+                <i class="p-toolbar-separator pi pi-bars mr-2" style="vertical-align: middle"></i>
+                <div class="p-toolbar-group-end">
+                    <p-button icon="pi pi-calendar" styleClass="p-button-success"></p-button>
+
+                    <p-button icon="pi pi-times" styleClass="p-button-danger"></p-button>
+                </div>
+            </p-toolbar>
+        
+            <p-table #dt [value]="patients" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['code','name','age','occupation']" 
+            [rows]="10" [paginator]="true" [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando del {first} a {last} de {totalRecords} registros" 
+            [(selection)]="selectedPatients" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Administrar Pacientes</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."  class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="code">Codigo SaraWorld <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="name">Apellido y Nombre <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="age">Edad <p-sortIcon field="age"></p-sortIcon></th>
+                        <th pSortableColumn="occupation">Ocupación <p-sortIcon field="occupation"></p-sortIcon></th>
+                        <th pSortableColumn="lastConsultation.date">Fecha Ult. Consulta <p-sortIcon field="lastConsultation?.date"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-patient>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="patient"></p-tableCheckbox>
+                        </td>
+                        <td style="width:14%; min-width:10rem;"><span class="p-column-title">Code</span>
+                            {{patient.code}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Nombre y Apellidos</span>
+                            {{patient.name}} {{patient.surname1}} {{patient.surname2}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Edad</span>
+                            {{patient.age}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Ocupación</span>
+                            {{patient.occupation}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Fecha Ult. Consulta</span>
+                            {{patient.lastConsultation?.date | amDateFormat:'DD/MM/YYYY HH:mm'}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editPatient(patient)" title="Editar datos usuario / Ver datos ultima consulta"></button>
+                                <button pButton pRipple icon="pi pi-file" class="p-button-rounded p-button-success mr-2" (click)="addConsultation(patient)" title="Agregar nueva consulta"></button>
+                                <button pButton pRipple icon="pi pi-book" class="p-button-rounded p-button-success mr-2" (click)="viewHistory(patient)" title="História"></button>
+                                
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deletePatient(patient)" title="Borrar paciente"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="patientDialog" [style]="{width: '90%'}" header="Detalle del paciente" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <p-accordion>
+                    <p-accordionTab header="Datos del paciente" [selected]="true" class="line-height-3 m-0">
+                        <app-personal-data #personalData [patient]="patient" [readonly]="false" [submitted]="submitted">
+
+                        </app-personal-data>
+                    </p-accordionTab>
+                    <p-accordionTab *ngIf="patient?.lastConsultation" header="Datos generales de la última consulta" class="line-height-3 m-0">
+                        <app-consultation-data [patient]="patient" [readonly]="false">
+
+                        </app-consultation-data>
+                    </p-accordionTab>
+                    <p-accordionTab *ngIf="patient?.lastConsultation?.bodyInformation" header="Datos corporales de la última consulta" class="line-height-3 m-0">
+                        <app-corporal-data [patient]="patient" [readonly]="false" [showImageLoader]="true">
+
+                        </app-corporal-data>
+                    </p-accordionTab>
+                    <p-accordionTab *ngIf="patient?.lastConsultation?.facialInformation" header="Datos faciales de la última consulta" class="line-height-3 m-0">
+                        <app-facial-data [patient]="patient" [readonly]="false" [showImageLoader]="true">
+
+                        </app-facial-data>
+                    </p-accordionTab>
+                </p-accordion>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="save('patient')"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deletePatientDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="patient">¿Está seguro de eliminar el siguiente a <b>{{patient.name}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deletePatientDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deletePatientsDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span>¿Está seguro de eliminar a los paciente seleccionados?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deletePatientsDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteSelected()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="patientConsultationDialog" [style]="{width: '90%'}" header="Nueva consulta" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <p-accordion>
+                    <p-accordionTab header="Datos del paciente" class="line-height-3 m-0">
+                        <app-personal-data #personalData [patient]="patient" [readonly]="true" [submitted]="submitted">
+
+                        </app-personal-data>
+                    </p-accordionTab>
+                    <p-accordionTab *ngIf="patient?.lastConsultation" [selected]="true" class="line-height-3 m-0">
+                        <ng-template pTemplate="header">
+                            Datos generales
+                            <div style="right: 15px; position: absolute;">
+                                <p-button icon="pi pi-cloud-download" title="Pre cargar datos de la consulta anterior" styleClass="p-button-success" (click)="preLoadFormData('consultation')"></p-button>
+                                <p-button icon="pi pi-times" title="Limpiar formulario" styleClass="p-button-danger" (click)="cleanFormData('consultation')"></p-button>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <app-consultation-data [patient]="patient" [readonly]="false">
+
+                            </app-consultation-data>
+                        </ng-template>
+                    </p-accordionTab>
+                    <p-accordionTab *ngIf="patient?.lastConsultation?.bodyInformation" class="line-height-3 m-0">
+                        <ng-template pTemplate="header">
+                            Datos corporales
+                            <div style="right: 15px; position: absolute;">
+                                <p-button icon="pi pi-cloud-download" title="Pre cargar datos de la consulta anterior" styleClass="p-button-success" (click)="preLoadFormData('corporal')"></p-button>
+                                <p-button icon="pi pi-times" title="Limpiar formulario" styleClass="p-button-danger" (click)="cleanFormData('corporal')"></p-button>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <app-corporal-data #corporalData [patient]="patient" [readonly]="false">
+
+                            </app-corporal-data>
+                        </ng-template>
+                    </p-accordionTab>
+                    <button *ngIf="!patient?.lastConsultation?.bodyInformation" pButton pRipple label="Agregar Datos Corporales" 
+                    icon="pi pi-add" class="p-button-text" (click)="addBodyInformation()"></button>
+                    <p-accordionTab *ngIf="patient?.lastConsultation?.facialInformation" class="line-height-3 m-0">
+                        <ng-template pTemplate="header">
+                            Datos faciales
+                            <div style="right: 15px; position: absolute;">
+                                <p-button icon="pi pi-cloud-download" title="Pre cargar datos de la consulta anterior" styleClass="p-button-success" (click)="preLoadFormData('facial')"></p-button>
+                                <p-button icon="pi pi-times" title="Limpiar formulario" styleClass="p-button-danger" (click)="cleanFormData('facial')"></p-button>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <app-facial-data #facialData [patient]="patient" [readonly]="false">
+
+                            </app-facial-data>
+                        </ng-template>
+                    </p-accordionTab>
+                    <button *ngIf="!patient?.lastConsultation?.facialInformation" pButton pRipple label="Agregar Datos Faciales" 
+                    icon="pi pi-add" class="p-button-text" (click)="addFacialInformation()"></button>
+                </p-accordion>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideConsultationDialog()"></button>
+                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="save('consultation')"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="patientHistoryDialog" [style]="{width: '90%'}" [modal]="true" class="p-fluid" >
+            <ng-template pTemplate="header">
+                <b>Historial de {{(patient?.name ?? '') + ' ' + (patient?.surname1 ?? '') + ' ' + (patient?.surname2 ?? '')}}</b>
+            </ng-template>
+            <ng-template pTemplate="content">
+                <app-history [patient]="patient" [readonly]="false" (onOpenConsultationView)="onOpenConsultationView($event)">
+
+                </app-history>
+            </ng-template>
+            <ng-template pTemplate="footer">
+
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="patientConsultationViewDialog" [style]="{width: '90%'}" header="Consulta" [modal]="true" class="p-fluid" (onHide)="onHidePatientConsultationViewDialog()">
+            <ng-template pTemplate="content">
+                <p-accordion>
+                    <p-accordionTab *ngIf="patientView?.lastConsultation" [selected]="true" class="line-height-3 m-0">
+                        <ng-template pTemplate="header">
+                            Datos generales
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <app-consultation-data [patient]="patientView" [readonly]="true">
+
+                            </app-consultation-data>
+                        </ng-template>
+                    </p-accordionTab>
+                    <p-accordionTab *ngIf="patientView?.lastConsultation?.bodyInformation" class="line-height-3 m-0">
+                        <ng-template pTemplate="header">
+                            Datos corporales
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <app-corporal-data #corporalData [patient]="patientView" [readonly]="true">
+
+                            </app-corporal-data>
+                        </ng-template>
+                    </p-accordionTab>
+                    <p-accordionTab *ngIf="patientView?.lastConsultation?.facialInformation" class="line-height-3 m-0">
+                        <ng-template pTemplate="header">
+                            Datos faciales
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <app-facial-data #facialData [patient]="patientView" [readonly]="true">
+
+                            </app-facial-data>
+                        </ng-template>
+                    </p-accordionTab>
+                </p-accordion>
+            </ng-template>
+            <ng-template pTemplate="footer">
+            </ng-template>
+        </p-dialog>
+
+
+        <p-dialog [(visible)]="loadingDialog" header="Cargando..." [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-spin pi-spinner mr-3" style="font-size: 2rem"></i>
+                <span>Se está procesando su solicitud</span>
+            </div>
+        </p-dialog>
+    </div>
+</div>
