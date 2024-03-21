@@ -1,5 +1,6 @@
 # eterea-historia-clinica-web
-
+npm i
+ng serve
 
 ## Getting started
 
